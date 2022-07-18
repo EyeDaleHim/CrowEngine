@@ -17,7 +17,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var pauseOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Toggle Practice Mode', 'Exit to menu'];
+	var pauseOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Toggle Practice Mode', 'Options', 'Exit to menu'];
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
 
 	var menuItems:Array<String> = [];
@@ -47,27 +47,27 @@ class PauseSubState extends MusicBeatSubstate
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
 		levelInfo.text += PlayState.SONG.song;
 		levelInfo.scrollFactor.set();
-		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
+		levelInfo.setFormat(Paths.defaultFont, 32);
 		levelInfo.updateHitbox();
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
 		levelDifficulty.text += CoolUtil.difficultyString();
 		levelDifficulty.scrollFactor.set();
-		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
+		levelDifficulty.setFormat(Paths.defaultFont, 32);
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
 		var deathCounter:FlxText = new FlxText(20, 15 + 64, 0, "", 32);
 		deathCounter.text = 'Blue balled: ' + PlayState.deathCounter;
 		deathCounter.scrollFactor.set();
-		deathCounter.setFormat(Paths.font('vcr.ttf'), 32);
+		deathCounter.setFormat(Paths.defaultFont, 32);
 		deathCounter.updateHitbox();
 		add(deathCounter);
 
 		practiceText = new FlxText(20, 15 + 96, 0, "PRACTICE MODE", 32);
 		practiceText.scrollFactor.set();
-		practiceText.setFormat(Paths.font('vcr.ttf'), 32);
+		practiceText.setFormat(Paths.defaultFont, 32);
 		practiceText.updateHitbox();
 		practiceText.x = FlxG.width - (practiceText.width + 20);
 		practiceText.visible = PlayState.practiceMode;
@@ -90,6 +90,8 @@ class PauseSubState extends MusicBeatSubstate
 		add(grpMenuShit);
 
 		regenMenu();
+
+		cameras = [PlayState.current.pauseCamera];
 	}
 
 	private function regenMenu()
@@ -139,12 +141,22 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
+					var keys:Array<Bool> = [controls.NOTE_LEFT, controls.NOTE_DOWN,controls.NOTE_UP, controls.NOTE_RIGHT];
+					for (i in 0...keys.length)
+					{
+						PlayState.current.pressedKeys[i] = keys[i];
+					}
 					close();
 				case "Restart Song":
 					FlxG.resetState();
 				case "Change Difficulty":
 					menuItems = difficultyChoices;
 					regenMenu();
+				case "Options":
+					// too smol brain to figure out how to make a substate for classes, for now do this
+					ui.OptionsState.fromPlayState = true;
+					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					FlxG.switchState(new ui.OptionsState());
 				case "Toggle Practice Mode":
 					PlayState.practiceMode = !PlayState.practiceMode;
 					practiceText.visible = PlayState.practiceMode;

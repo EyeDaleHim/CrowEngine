@@ -21,6 +21,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
+import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxSound;
@@ -63,10 +64,6 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
-		#end
-
 		FlxG.game.focusLostFramerate = 60;
 
 		swagShader = new ColorSwap();
@@ -78,7 +75,7 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('crowengine', 'eyedalehim');
 
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
@@ -119,6 +116,9 @@ class TitleState extends MusicBeatState
 
 		Application.current.onExit.add(function(exitCode)
 		{
+			FlxG.save.data.globalVolume = FlxG.sound.volume;
+			FlxG.save.flush();
+			
 			DiscordClient.shutdown();
 		});
 		#end
@@ -197,12 +197,9 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
-		logoBl = new FlxSprite(-150, -100);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+		logoBl = new FlxSprite(-50, -160);
+		logoBl.loadGraphic(Paths.image("modLogo"));
 		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.play('bump');
-		logoBl.updateHitbox();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 		logoBl.shader = swagShader.shader;
@@ -257,8 +254,6 @@ class TitleState extends MusicBeatState
 		ngSpr.antialiasing = true;
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
-
-		FlxG.mouse.visible = false;
 
 		if (initialized)
 			skipIntro();
@@ -389,6 +384,12 @@ class TitleState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		if (logoBl != null)
+		{
+			var coolLerp:Float = CoolUtil.coolLerp(1, logoBl.scale.x, 1 - (elapsed * 9));
+			logoBl.scale.set(coolLerp, coolLerp);
+		}
 	}
 
 	function createCoolText(textArray:Array<String>)
@@ -425,7 +426,9 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 
-		logoBl.animation.play('bump');
+		if (logoBl != null)
+			logoBl.scale.set(1.1, 1.1);
+
 		danceLeft = !danceLeft;
 
 		if (danceLeft)

@@ -79,15 +79,15 @@ class StoryMenuState extends MusicBeatState
 		persistentUpdate = persistentDraw = true;
 
 		scoreText = new FlxText(10, 10, 0, "SCORE: 49324858", 36);
-		scoreText.setFormat("VCR OSD Mono", 32);
+		scoreText.setFormat(Paths.defaultFont, 32);
 
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
-		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		txtWeekTitle.setFormat(Paths.defaultFont, 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 
 		var rankText:FlxText = new FlxText(0, 10);
 		rankText.text = 'RANK: GREAT';
-		rankText.setFormat(Paths.font("vcr.ttf"), 32);
+		rankText.setFormat(Paths.defaultFont, 32);
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
 
@@ -104,8 +104,6 @@ class StoryMenuState extends MusicBeatState
 
 		grpLocks = new FlxTypedGroup<FlxSprite>();
 		add(grpLocks);
-
-		trace("Line 70");
 
 		#if desktop
 		// Updating Discord Rich Presence
@@ -135,8 +133,6 @@ class StoryMenuState extends MusicBeatState
 				grpLocks.add(lock);
 			}
 		}
-
-		trace("Line 96");
 
 		for (char in 0...3)
 		{
@@ -168,8 +164,6 @@ class StoryMenuState extends MusicBeatState
 		difficultySelectors = new FlxGroup();
 		add(difficultySelectors);
 
-		trace("Line 124");
-
 		leftArrow = new FlxSprite(grpWeekText.members[0].x + grpWeekText.members[0].width + 10, grpWeekText.members[0].y + 10);
 		leftArrow.frames = ui_tex;
 		leftArrow.animation.addByPrefix('idle', "arrow left");
@@ -194,8 +188,6 @@ class StoryMenuState extends MusicBeatState
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
 
-		trace("Line 150");
-
 		add(yellowBG);
 		add(grpWeekCharacters);
 
@@ -209,8 +201,6 @@ class StoryMenuState extends MusicBeatState
 		add(txtWeekTitle);
 
 		updateText();
-
-		trace("Line 165");
 
 		super.create();
 	}
@@ -353,7 +343,7 @@ class StoryMenuState extends MusicBeatState
 		sprDifficulty.y = leftArrow.y - 15;
 
 		#if !switch
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
+		intendedScore = Math.floor(Highscore.getWeekScore(curWeek, curDifficulty));
 		#end
 
 		FlxTween.tween(sprDifficulty, {y: leftArrow.y + 15, alpha: 1}, 0.07);
@@ -429,6 +419,8 @@ class StoryMenuState extends MusicBeatState
 		{
 			txtTracklist.text += "\n" + i;
 		}
+		
+		txtTracklist.text += "\n";
 
 		txtTracklist.text = txtTracklist.text.toUpperCase();
 
@@ -436,7 +428,7 @@ class StoryMenuState extends MusicBeatState
 		txtTracklist.x -= FlxG.width * 0.35;
 
 		#if !switch
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
+		intendedScore = Math.floor(Highscore.getWeekScore(curWeek, curDifficulty));
 		#end
 	}
 }

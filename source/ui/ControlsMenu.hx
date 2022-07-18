@@ -48,7 +48,7 @@ class ControlsMenu extends Page
 		if (FlxG.gamepads.numActiveGamepads > 0)
 		{
 			var spr:FlxSprite = new FlxSprite();
-			spr.makeGraphic(FlxG.width, 100, 0xFFFAFD6D);
+			spr.makeGraphic(FlxG.width, 100, 0x00000000);
 			add(spr);
 			deviceList = new TextMenuList(Horizontal, None);
 			add(deviceList);
@@ -119,9 +119,10 @@ class ControlsMenu extends Page
 			});
 			labels.members[Std.int(controlGrid.selectedIndex / 2)].alpha = 1;
 		});
+		menuCamera.maxScrollY = controlGrid.members[controlGrid.length - 1].y + controlGrid.members[controlGrid.length - 1].height + 24;
 		prompt = new Prompt('\nPress any key to rebind\n\n\n\n    Escape to cancel', None);
 		prompt.create();
-		prompt.createBgFromMargin(100, 0xFFFAFD6D);
+		prompt.createBgFromMargin(100, 0x00000000);
 		prompt.back.scrollFactor.set(0, 0);
 		prompt.exists = false;
 		add(prompt);

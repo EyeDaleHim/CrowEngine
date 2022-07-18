@@ -20,8 +20,8 @@ class FreeplayState extends MusicBeatState
 	var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
-	var curSelected:Int = 0;
-	var curDifficulty:Int = 1;
+	static var curSelected:Int = 0;
+	static var curDifficulty:Int = 1;
 
 	var bg:FlxSprite;
 	var scoreBG:FlxSprite;
@@ -116,7 +116,7 @@ class FreeplayState extends MusicBeatState
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		// scoreText.autoSize = false;
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		scoreText.setFormat(Paths.defaultFont, 32, FlxColor.WHITE, RIGHT);
 		// scoreText.alignment = RIGHT;
 
 		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 66, 0xFF000000);
@@ -192,7 +192,7 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
-		lerpScore = CoolUtil.coolLerp(lerpScore, intendedScore, 0.4);
+		lerpScore = CoolUtil.coolLerp(lerpScore, intendedScore, elapsed * 24);
 		bg.color = FlxColor.interpolate(bg.color, coolColors[songs[curSelected].week % coolColors.length], CoolUtil.camLerpShit(0.045));
 
 		scoreText.text = "PERSONAL BEST:" + Math.round(lerpScore);
@@ -248,7 +248,7 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 0;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Math.floor(Highscore.getScore(songs[curSelected].songName, curDifficulty));
 		#end
 
 		PlayState.storyDifficulty = curDifficulty;
@@ -270,7 +270,7 @@ class FreeplayState extends MusicBeatState
 		// selector.y = (70 * curSelected) + 30;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Math.floor(Highscore.getScore(songs[curSelected].songName, curDifficulty));
 		// lerpScore = 0;
 		#end
 

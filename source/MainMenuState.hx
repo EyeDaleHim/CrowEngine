@@ -77,7 +77,7 @@ class MainMenuState extends MusicBeatState
 		magenta.visible = false;
 		magenta.antialiasing = true;
 		magenta.color = 0xFFFD719B;
-		if (PreferencesMenu.preferences.get('flashing-menu'))
+		if (PreferencesMenu.preferences.get('flashing-light'))
 		{
 			add(magenta);
 		}
@@ -122,13 +122,10 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
 		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat(Paths.defaultFont, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-		#if ng
-		versionShit.text += "(Newgrounds exclusive preview)";
-		#end
 
 		super.create();
 	}
@@ -186,6 +183,9 @@ class MainMenuState extends MusicBeatState
 		{
 			menuItems.enabled = false;
 		}
+
+		if (FlxG.keys.justPressed.F7)
+			FlxG.switchState(new songinfo.Stage.StageEditorState());
 
 		if (controls.BACK && menuItems.enabled && !menuItems.busy)
 		{
